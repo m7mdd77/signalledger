@@ -1,0 +1,21 @@
+{
+  "run_at": "2026-10-07T15:21:13.301Z",
+  "input_count": 100,
+  "output_count": 100,
+  "input_hash": "5bb5f59d7e3b5e1482e371802b77160d449be7430880936058abcada8994fe46",
+  "terminal_counts": {
+    "available": 100,
+    "not_available": 0,
+    "blocked": 0,
+    "not_applicable": 0,
+    "ambiguous": 0,
+    "failed": 0
+  },
+  "claim_count": 2882,
+  "request_count": 413,
+  "p50_company_ms": 614,
+  "p95_company_ms": 2154,
+  "external_api_cost_usd": 0,
+  "official_score": null,
+  "score_note": "Smoke/completion evidence only; precision/recall and qualification require an organizer-run reference set."
+}
