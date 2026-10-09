@@ -1,0 +1,6 @@
+{
+  "name": "signalledger", "version": "1.0.0", "private": true, "type": "module",
+  "engines": { "node": ">=24" },
+  "scripts": { "test": "node --test test/*.test.mjs", "collect": "node cli.mjs", "smoke": "node smoke.mjs", "start": "node server.mjs" },
+  "dependencies": { "cheerio": "1.1.2", "ipaddr.js": "2.2.0", "robots-parser": "3.0.1", "lucide": "0.468.0" }
+}

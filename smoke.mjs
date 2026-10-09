@@ -1,0 +1,20 @@
+import {gunzipSync} from 'node:zlib';
+import {mkdir,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {parseInputs,collect} from './cli.mjs';
+
+const url='https://builderr.ai/signalpost-company-universe-2025.jsonl.gz';
+const response=await fetch(url,{signal:AbortSignal.timeout(60_000)});
+if(!response.ok)throw new Error(`Universe HTTP ${response.status}`);
+const archive=Buffer.from(await response.arrayBuffer());
+const sha=data=>createHash('sha256').update(data).digest('hex');
+if(archive.length>20_000_000||sha(archive)!=='1c89710e5b01f8617e86d09fbdff4a52f2f8dbbba297e74f7164b5984f5a0384')throw new Error('Organizer archive checksum mismatch');
+const content=gunzipSync(archive,{maxOutputLength:150_000_000});
+if(sha(content)!=='b82d6a3e7231d1759a958c282bc4366b80ec2fab8095053d8ed7fa9cd01bc838')throw new Error('Universe content checksum mismatch');
+const all=parseInputs(content.toString('utf8'));
+if(all.length!==411160)throw new Error(`Unexpected universe size ${all.length}`);
+const sample=Array.from({length:100},(_,i)=>all[Math.floor(i*all.length/100)]);
+await mkdir('out',{recursive:true});
+await writeFile('out/smoke-inputs.json',JSON.stringify(sample,null,2));
+await writeFile('out/universe-provenance.json',JSON.stringify({url,archive_sha256:sha(archive),content_sha256:sha(content),universe_count:all.length,sampling:'100 evenly spaced entries in published file order; not a random accuracy test',retrieved_at:new Date().toISOString()},null,2));
+console.log(JSON.stringify(await collect({inputs:sample,directory:'out',websites:process.argv.includes('--websites'),concurrency:3}),null,2));
